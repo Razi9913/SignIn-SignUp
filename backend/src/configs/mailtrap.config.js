@@ -39,7 +39,7 @@ export const sender = {
 
 // import { MailtrapClient } from "mailtrap";
 
-// const TOKEN = "512a8dc3aef3f481ce04f29157266ee9";
+// const TOKEN = ""example Token"
 
 // const client = new MailtrapClient({ token: TOKEN });
 
@@ -49,7 +49,7 @@ export const sender = {
 // };
 // const recipients = [
 //   {
-//     email: "skrazi9913@gmail.com",
+//     email: "example.email.com",
 //   }
 // ];
 

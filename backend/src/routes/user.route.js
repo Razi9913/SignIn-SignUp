@@ -11,8 +11,8 @@ userRouter.post("/reset-password", resetPasswordToken)
 userRouter.post("/change-password/:token", changePassword)
 userRouter.post("/update-profile", isVerifiedToken, updateProfile)
 
-userRouter.get("/resend-otp", isVerifiedToken, resendOtp)
 userRouter.get("/logout", logout)
+userRouter.get("/resend-otp", isVerifiedToken, resendOtp)
 userRouter.get("/check-auth", isVerifiedToken, checkAuth)
 
 export { userRouter }

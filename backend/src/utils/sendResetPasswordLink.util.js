@@ -10,7 +10,7 @@ async function sendResetPasswordLink(email, resetToken) {
       to: recipients,
       subject: "Verify your email",
       html: PASSWORD_RESET_REQUEST_TEMPLATE
-        .replace("{resetUrl}", resetToken),
+        .replace("{resetUrl}", `${process.env.FRONTEND_URL}/change-password/${resetToken}`),
       category: "Email Verification",
     })
 

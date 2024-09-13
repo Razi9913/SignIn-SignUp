@@ -5,13 +5,14 @@ import { sendResetPasswordLink } from '../utils/index.util.js';
 
 async function resetPasswordToken(req, res) {
   const { email } = req.body;
+
   try {
-    const user = await User.findOne({ email })
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({
         success: false,
-        message: "User not found.",
-      })
+        message: "User does not exist",
+      });
     }
 
     const resetToken = crypto.randomBytes(20).toString("hex");

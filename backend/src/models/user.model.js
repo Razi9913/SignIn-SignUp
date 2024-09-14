@@ -27,6 +27,14 @@ const userSchema = mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
+  noOfOtpSent: {
+    type: Number,
+    default: 0,
+  },
+  noOfOtpSentExpiryAt: {
+    type: Date,
+    default: null,
+  },
   emailOtp: {
     type: String,
     default: "",

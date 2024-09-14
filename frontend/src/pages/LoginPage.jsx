@@ -22,11 +22,14 @@ function LoginPage() {
     });
   };
 
-  const { error, isLoading, login } = userStore()
+  const { error, isLoading, login, user } = userStore()
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       await login(signUpData);
+      if (!user?.isVerified) {
+        nav("/verify-email");
+      }
       nav("/");
     } catch (err) {
       console.log(err);

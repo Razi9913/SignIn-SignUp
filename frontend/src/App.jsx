@@ -6,12 +6,12 @@ import { FloatingShape, LoadingSpinner } from './components/index.components'
 import { userStore } from './stores/user.store.js'
 
 function App() {
-  const { checkAuth, isCheckingAuth, user } = userStore();
+  const { checkAuth, isCheckingAuth } = userStore();
   console.log(isCheckingAuth);
 
   useEffect(() => {
     checkAuth();
-  }, [])
+  }, [checkAuth])
   if (isCheckingAuth) return <LoadingSpinner />;
 
   return (

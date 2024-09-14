@@ -38,6 +38,8 @@ async function verifyEmail(req, res) {
     user.isVerified = true;
     user.emailOtp = undefined;
     user.emailOtpExpiryAt = undefined;
+    user.noOfOtpSent = undefined;
+    user.noOfOtpSentExpiryAt = undefined;
     await user.save();
 
     await sendWelcomeEmail(user.email, user.fullName);

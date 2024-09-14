@@ -6,6 +6,8 @@ import { userStore } from '../stores/user.store.js'
 
 function EmailVerifyPage() {
   const [code, setCode] = useState(["", "", "", "", "", ""])
+  const [second, setSecond] = useState(10)
+  const [minute, setMinute] = useState(0)
   const inputRefs = useRef([]);
   const nav = useNavigate();
 
@@ -41,7 +43,7 @@ function EmailVerifyPage() {
     }
   };
 
-  const { error, isLoading, verifyEmail, message, resendOtp } = userStore()
+  const { error, isLoading, verifyEmail, user, resendOtp } = userStore()
   const handleSubmit = async (e) => {
     e.preventDefault();
     const verificationCode = code.join("");
@@ -58,14 +60,36 @@ function EmailVerifyPage() {
   const handelResendOtp = async () => {
     try {
       await resendOtp();
+      setMinute(0);
+      setSecond(10);
       // toast.success(message);
     } catch (err) {
       console.log(err);
     }
   }
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (second > 0) {
+        setSecond(second - 1)
+      }
+      if (second === 0) {
+        if (minute === 0) {
+          clearInterval(interval)
+        }
+        else {
+          setSecond(59)
+          setMinute(minute - 1)
+        }
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [second])
   // Auto submit when all fields are filled
   useEffect(() => {
+    if (user.isVerified) {
+      nav("/");
+    }
     if (code.every((digit) => digit !== "")) {
       handleSubmit(new Event("submit"));
     }
@@ -102,8 +126,7 @@ function EmailVerifyPage() {
           {/* link tag fro react router dom */}
           {/* <Link to={"/login"} className='text-green-500 font-semibold'>Login</Link> */}
           <p className='text-green-500 font-semibold mt-2'>
-            Didn't get the code?
-            <span onClick={handelResendOtp} className='opacity-50'>Click to Resend after 01:00</span></p>
+            Resend Otp  {(second === 0 && minute === 0) ? <span onClick={handelResendOtp} className='hover:underline'>Click here</span> : `after 0${minute} : ${second}`} </p>
 
           {error && <p className='text-red-500 font-semibold mt-2'>{error}</p>}
           <motion.button

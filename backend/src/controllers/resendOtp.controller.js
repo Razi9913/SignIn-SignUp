@@ -11,9 +11,33 @@ async function resendOtp(req, res) {
         message: "User not found.",
       })
     }
-    // send otp logic here
-    const otp = Math.floor(100000 + Math.random() * 900000).toString()
+    if (user.noOfOtpSent >= 2) {
+      user.noOfOtpSent = 0;
+      user.noOfOtpSentExpiryAt = Date.now() + 1 * 60 * 60 * 1000;
+      user.save();
+      return res.status(400).json({
+        success: false,
+        message: "Maximum otp limit reached.",
+      })
+    }
+    if (Date.now() < new Date(user.noOfOtpSentExpiryAt).getTime()) {
+      return res.status(400).json({
+        success: false,
+        message: `Maximum otp limit reached. try after ${new Date(user.noOfOtpSentExpiryAt).toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          // second: "2-digit",
+        })}`,
+      })
+    }
+    console.log(Date.now() < new Date(user.noOfOtpSentExpiryAt).getTime());
+    console.log(Date.now());
+    console.log(new Date(user.noOfOtpSentExpiryAt).getTime());
 
+    // send otp logic here
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    user.noOfOtpSent += 1;
     user.emailOtp = otp;
     user.emailOtpExpiryAt = Date.now() + 30 * 60 * 1000;
     await user.save();

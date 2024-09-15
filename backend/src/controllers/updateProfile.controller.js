@@ -1,9 +1,8 @@
-import bcrypt from 'bcrypt'
-
 import { User } from "../models/user.model.js";
+import { sendOtp } from "../utils/sendOtp.util.js";
 
 async function updateProfile(req, res) {
-  const { fullName, email, password } = req.body;
+  const { fullName, email } = req.body;
   const id = req.userId;
   try {
     if (email) {
@@ -24,11 +23,12 @@ async function updateProfile(req, res) {
       })
     }
 
-    if (password) {
-      user.password = await bcrypt.hash(password, 8);
-    }
     if (email && email !== user.email) {
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      await sendOtp(email, otp)
       user.email = email;
+      user.emailOtp = otp;
+      user.emailOtpExpiryAt = Date.now() + 30 * 60 * 1000;
       user.isVerified = false;
     }
 
@@ -37,7 +37,11 @@ async function updateProfile(req, res) {
 
     return res.status(200).json({
       success: true,
-      message: "Profile updated successfully"
+      message: "Profile updated successfully",
+      user: {
+        ...user._doc,
+        password: undefined,
+      }
     })
   } catch (error) {
     return res.status(500).json({

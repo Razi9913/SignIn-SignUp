@@ -34,9 +34,9 @@ const HomePage = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}>
           <h3 className='text-xl font-semibold text-green-400 mb-3'>Profile Information</h3>
-          <p className='text-gray-300'>Name: {user.fullName}</p>
-          <p className='text-gray-300'>Email: {user.email}</p>
-          <p className='text-gray-300'>Email is: <span className={`${user.isVerified ? "text-gray-300" : "text-green-500"}`}>{user.isVerified ? "verified" : "not verified"}</span></p>
+          <p className='text-gray-300'>Name: {user?.fullName}</p>
+          <p className='text-gray-300'>Email: {user?.email}</p>
+          <p className='text-gray-300'>Email is: <span className={`${user?.isVerified ? "text-gray-300" : "text-green-500"}`}>{user?.isVerified ? "verified" : "not verified"}</span></p>
           <p className='text-gray-300'>Password: ##########</p>
         </motion.div>
 
@@ -49,7 +49,7 @@ const HomePage = () => {
           {/* Joined */}
           <p className='text-gray-300'>
             <span className='font-bold'>Joined: </span>
-            {new Date(user.createdAt).toLocaleString("en-US", {
+            {new Date(user?.createdAt).toLocaleString("en-US", {
               year: "numeric",
               month: "long",
               day: "numeric",
@@ -61,7 +61,7 @@ const HomePage = () => {
           {/* Last Updated */}
           <p className='text-gray-300'>
             <span className='font-bold'>Last Updated: </span>
-            {new Date(user.updatedAt).toLocaleString("en-US", {
+            {new Date(user?.updatedAt).toLocaleString("en-US", {
               year: "numeric",
               month: "long",
               day: "numeric",
@@ -72,7 +72,7 @@ const HomePage = () => {
           {/* Last Login */}
           <p className='text-gray-300'>
             <span className='font-bold'>Last Login: </span>
-            {new Date(user.lastLogin).toLocaleString("en-US", {
+            {new Date(user?.lastLogin).toLocaleString("en-US", {
               year: "numeric",
               month: "long",
               day: "numeric",

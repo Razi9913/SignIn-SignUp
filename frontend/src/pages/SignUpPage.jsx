@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from "framer-motion";
 import { User, Mail, Lock, Equal, Loader } from 'lucide-react';
 import { Input, LoginSignUp, PasswordMatching, PasswordStrengthMeter } from '../components/index.components';
@@ -31,7 +31,7 @@ function SignUpPage() {
     setFocusedField(null);
   };
 
-  const { error, isLoading, signUp } = userStore()
+  const { error, isLoading, signUp, clearError } = userStore()
   const handelSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -41,6 +41,10 @@ function SignUpPage() {
       console.log("f", err);
     }
   }
+
+  useEffect(() => {
+    clearError()
+  }, [])
 
   return (
     <motion.div

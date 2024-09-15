@@ -47,6 +47,10 @@ async function verifyEmail(req, res) {
     return res.status(200).json({
       success: true,
       message: "Email verified successfully.",
+      user: {
+        ...user._doc,
+        password: undefined,
+      }
     });
   } catch (error) {
     return res.status(500).json({

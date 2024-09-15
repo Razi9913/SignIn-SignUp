@@ -128,6 +128,7 @@ const userStore = create((set) => ({
         error: null,
         isAuthenticated: true,
         isLoading: false,
+        // isCheckingAuth: true,
       });
     } catch (error) {
       set({
@@ -222,6 +223,19 @@ const userStore = create((set) => ({
       throw error;
     }
   },
+
+  clearError: () => {
+    set({
+      error: null,
+    });
+  },
+
+  clearMessage: () => {
+    set({
+      message: null,
+    });
+  },
+
 }));
 
 export { userStore };

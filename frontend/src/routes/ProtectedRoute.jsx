@@ -10,8 +10,12 @@ function ProtectedRoute({ element }) {
     return <Navigate to="/login" replace />;
   }
 
+  // if (!user && isAuthenticated) {
+  //   return <LoadingSpinner />;
+  // }
+
   // If the user is authenticated but not verified and is trying to access non-verification pages, redirect them.
-  if (!user.isVerified && window.location.pathname !== '/verify-email') {
+  if (user && !user.isVerified && window.location.pathname !== '/verify-email') {
     return <Navigate to="/verify-email" replace />;
   }
 
@@ -21,7 +25,6 @@ function ProtectedRoute({ element }) {
 function RedirectAuthenticatedUser({ element }) {
   const { isAuthenticated, user } = userStore();
 
-  // Redirect verified users away from login, signup, and verify-email routes
   if (isAuthenticated && user.isVerified) {
     return <Navigate to="/" replace />;
   }

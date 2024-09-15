@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion } from "framer-motion";
 import { Mail, Lock, Loader } from "lucide-react";
 import { Link, useNavigate } from 'react-router-dom';
@@ -22,19 +22,20 @@ function LoginPage() {
     });
   };
 
-  const { error, isLoading, login, user } = userStore()
+  const { error, isLoading, login, clearError } = userStore()
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       await login(signUpData);
-      if (!user?.isVerified) {
-        nav("/verify-email");
-      }
       nav("/");
     } catch (err) {
       console.log(err);
     }
   }
+
+  useEffect(() => {
+    clearError()
+  }, [])
 
   return (
     <motion.div

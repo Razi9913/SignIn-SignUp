@@ -1,14 +1,14 @@
 import { Link, useNavigate } from 'react-router-dom'
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { User } from 'lucide-react'
+import { Loader, User } from 'lucide-react'
 import { Input } from '../components/index.components'
 import { userStore } from '../stores/user.store'
 import { ArrowLeft } from 'lucide-react';
 
 function UpdateProfile() {
   const nav = useNavigate();
-  const { user, updateProfile, error } = userStore();
+  const { user, updateProfile, error, isLoading } = userStore();
 
   const [userData, setUserData] = useState({
     fullName: user.fullName,
@@ -27,6 +27,9 @@ function UpdateProfile() {
     e.preventDefault()
     try {
       await updateProfile(userData)
+      if (!user.isVerified) {
+        nav("/verify-email")
+      }
       nav("/")
     } catch (err) {
       console.log("handelSubmit error", err);
@@ -84,7 +87,7 @@ function UpdateProfile() {
             whileTap={{ scale: 0.95 }}
             className='w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 disabled:opacity-50'
             type='submit' >
-            Update Your Profile
+            {isLoading ? <Loader className='animate-spin mx-auto' /> : "Update Your Profile"}
           </motion.button>
         </form>
       </motion.div>

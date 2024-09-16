@@ -8,10 +8,10 @@ import { ArrowLeft } from 'lucide-react';
 
 function UpdateProfile() {
   const nav = useNavigate();
-  const [file, setFile] = useState(null)
+  const [imagePreview, setImagePreview] = useState(null)
   const { user, updateProfile, error, isLoading } = userStore();
-
   const [userData, setUserData] = useState({
+    profileImage: null,
     fullName: user.fullName,
     email: user.email,
   })
@@ -24,10 +24,24 @@ function UpdateProfile() {
     })
   }
 
+  const handelFileChange = (e) => {
+    const file = e.target.files[0];
+    setUserData({ ...userData, profileImage: file })
+
+    const imageReader = new FileReader();
+    imageReader.onload = () => (
+      setImagePreview(imageReader.result)
+    )
+
+    if (file) {
+      imageReader.readAsDataURL(file);
+    }
+  };
+
   const handelSubmit = async (e) => {
     e.preventDefault()
     try {
-      await updateProfile({ ...userData, profileImage: file })
+      await updateProfile(userData)
       if (!user.isVerified) {
         nav("/verify-email")
       }
@@ -58,13 +72,14 @@ function UpdateProfile() {
           {/* image div */}
           <div className='flex flex-col items-center justify-center mb-6 '>
             {user.profileImage ? (
-              <img src={user.profileImage} alt='Profile' className='rounded-full w-32 h-32 object-cover' />
+              <img src={imagePreview ? imagePreview : user.profileImage} alt='Profile' className='rounded-full w-32 h-32 object-cover' />
             ) : (
               <div className='flex items-center justify-center rounded-full w-32 h-32 object-cover bg-[#C5CBCB] text-8xl'>
                 {user.fullName[0].toUpperCase()}
               </div>
             )}
-            <input type="file" name='profileImage' className=' mt-4 bg-[#C5CBCB] rounded-2xl px-4 py-2' placeholder='' onChange={e => setFile(e.target.files[0])} />
+            <input type="file" name='profileImage' id='changeProfileImage' hidden onChange={handelFileChange} />
+            <label htmlFor="changeProfileImage" className=' mt-4 bg-[#C5CBCB] rounded-2xl px-4 py-2'>Change Profile</label>
           </div>
 
           <p className='text-white'>Full Name</p>

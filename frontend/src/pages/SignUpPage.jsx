@@ -6,15 +6,16 @@ import { Input, LoginSignUp, PasswordMatching, PasswordStrengthMeter } from '../
 import { userStore } from '../stores/user.store.js';
 
 function SignUpPage() {
-  const [file, setFile] = useState(null)
+  const nav = useNavigate();
+  const [focusedField, setFocusedField] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [signUpData, setSignUpData] = useState({
+    profileImage: null,
     fullName: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
-  const [focusedField, setFocusedField] = useState(null);
-  const nav = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,6 +24,23 @@ function SignUpPage() {
       [name]: value,
     });
   };
+
+  const handelFileChange = (e) => {
+    const file = e.target.files[0];
+    setSignUpData({ ...signUpData, profileImage: file })
+
+    const imageReader = new FileReader();
+    imageReader.onload = () => {
+      setImagePreview(imageReader.result);
+    };
+
+    if (file) {
+      imageReader.readAsDataURL(file);
+    }
+  };
+
+  console.log(imagePreview);
+
 
   const handleFocus = (field) => {
     setFocusedField(field);
@@ -36,7 +54,9 @@ function SignUpPage() {
   const handelSubmit = async (e) => {
     e.preventDefault();
     try {
-      await signUp({ ...signUpData, profileImage: file })
+      console.log(signUpData);
+
+      await signUp(signUpData)
       nav("/verify-email")
     } catch (err) {
       console.log("signUp error", err);
@@ -46,9 +66,6 @@ function SignUpPage() {
   useEffect(() => {
     clearError()
   }, [])
-
-  console.log(file);
-
 
   return (
     <motion.div
@@ -65,12 +82,15 @@ function SignUpPage() {
         <form onSubmit={handelSubmit} encType='multipart/form-data'>
 
           <div className='flex flex-col items-center justify-center mb-6 '>
-            {/* <img src='https://img.freepik.com/free-photo/close-up-portrait-young-bearded-man-face_171337-2887.jpg?size=626&ext=jpg&ga=GA1.1.2008272138.1724716800&semt=ais_hybrid' alt='Profile' className='rounded-full w-32 h-32 object-cover' /> */}
             <div className='flex items-center justify-center rounded-full w-32 h-32 object-cover bg-[#C5CBCB] text-8xl'>
-
+              {imagePreview ? (
+                <img src={imagePreview} alt='Profile' className='rounded-full w-32 h-32 object-cover ' />
+              ) : (
+                <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfrdjmERksCRu0wajIX9sqc9lMb3vNXWHRcw&s' alt='Profile' className='rounded-full w-32 h-32 object-cover ' />
+              )}
             </div>
-            {/* <button className=' mt-4 bg-[#C5CBCB] rounded-2xl px-4 py-2'>Update Profile</button> */}
-            <input type="file" name='profileImage' className=' mt-4 bg-[#C5CBCB] rounded-2xl px-4 py-2' placeholder='' onChange={e => setFile(e.target.files[0])} />
+            <input type="file" name='profileImage' id='uploadProfile' hidden onChange={handelFileChange} />
+            <label for="uploadProfile" className=' mt-4 bg-[#C5CBCB] rounded-2xl px-4 py-2'>Upload Profile</label>
           </div>
 
           <Input

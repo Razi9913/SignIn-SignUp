@@ -6,6 +6,7 @@ import { Input, LoginSignUp, PasswordMatching, PasswordStrengthMeter } from '../
 import { userStore } from '../stores/user.store.js';
 
 function SignUpPage() {
+  const [file, setFile] = useState(null)
   const [signUpData, setSignUpData] = useState({
     fullName: "",
     email: "",
@@ -35,16 +36,19 @@ function SignUpPage() {
   const handelSubmit = async (e) => {
     e.preventDefault();
     try {
-      await signUp(signUpData)
+      await signUp({ ...signUpData, profileImage: file })
       nav("/verify-email")
     } catch (err) {
-      console.log("f", err);
+      console.log("signUp error", err);
     }
   }
 
   useEffect(() => {
     clearError()
   }, [])
+
+  console.log(file);
+
 
   return (
     <motion.div
@@ -58,7 +62,17 @@ function SignUpPage() {
           Create Account
         </h2>
 
-        <form onSubmit={handelSubmit}>
+        <form onSubmit={handelSubmit} encType='multipart/form-data'>
+
+          <div className='flex flex-col items-center justify-center mb-6 '>
+            {/* <img src='https://img.freepik.com/free-photo/close-up-portrait-young-bearded-man-face_171337-2887.jpg?size=626&ext=jpg&ga=GA1.1.2008272138.1724716800&semt=ais_hybrid' alt='Profile' className='rounded-full w-32 h-32 object-cover' /> */}
+            <div className='flex items-center justify-center rounded-full w-32 h-32 object-cover bg-[#C5CBCB] text-8xl'>
+
+            </div>
+            {/* <button className=' mt-4 bg-[#C5CBCB] rounded-2xl px-4 py-2'>Update Profile</button> */}
+            <input type="file" name='profileImage' className=' mt-4 bg-[#C5CBCB] rounded-2xl px-4 py-2' placeholder='' onChange={e => setFile(e.target.files[0])} />
+          </div>
+
           <Input
             icon={User}
             type='text'

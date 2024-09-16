@@ -1,11 +1,13 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from "framer-motion";
 import { userStore } from "../stores/user.store.js";
+import { useEffect } from 'react';
 
 const HomePage = () => {
   const nav = useNavigate();
 
   const { user, logout } = userStore()
+
   const handleLogout = async () => {
     try {
       await logout()
@@ -14,6 +16,10 @@ const HomePage = () => {
       console.log(err);
     }
   };
+
+  useEffect(() => {
+
+  }, [user.profileImage])
 
   return (
     <motion.div
@@ -24,7 +30,13 @@ const HomePage = () => {
       className='max-w-md w-full mx-auto mt-10 p-8 bg-gray-900 bg-opacity-80 backdrop-filter backdrop-blur-lg rounded-xl shadow-2xl border border-gray-800' >
 
       <div className='flex flex-col items-center justify-center mb-6'>
-        <img src='https://img.freepik.com/free-photo/close-up-portrait-young-bearded-man-face_171337-2887.jpg?size=626&ext=jpg&ga=GA1.1.2008272138.1724716800&semt=ais_hybrid' alt='Profile' className='rounded-full w-32 h-32 object-cover' />
+        {user.profileImage !== "" ? (
+          <img src={user.profileImage} alt='Profile' className='rounded-full w-32 h-32 object-cover' />
+        ) : (
+          <div className='flex items-center justify-center rounded-full w-32 h-32 object-cover bg-[#C5CBCB] text-8xl'>
+            {user.fullName[0].toUpperCase()}
+          </div>
+        )}
       </div>
 
       <div className='space-y-6'>

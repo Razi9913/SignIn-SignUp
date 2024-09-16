@@ -14,7 +14,8 @@ const userStore = create((set) => ({
   isCheckingAuth: true,
 
   signUp: async (userData) => {
-    const { fullName, email, password } = userData;
+    const { fullName, email, password, profileImage } = userData;
+    // console.log("userData:", userData); // Check if the password is present
 
     set({
       isLoading: true,
@@ -22,7 +23,22 @@ const userStore = create((set) => ({
     });
 
     try {
-      const response = await axios.post(`${BACKEND_URL}/sign-up`, { fullName, email, password });
+      const formData = new FormData();
+      formData.append("fullName", fullName);
+      formData.append("email", email);
+      formData.append("password", password);
+      if (profileImage) {
+        formData.append("profileImage", profileImage);
+      }
+
+      const response = await axios.post(`${BACKEND_URL}/sign-up`, formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
       set({
         user: response.data.user,
         error: null,
@@ -91,14 +107,27 @@ const userStore = create((set) => ({
   },
 
   updateProfile: async (userData) => {
-    const { fullName, email } = userData;
+    const { fullName, email, profileImage } = userData;
+    // console.log("userData:", userData); // Check if the password is present
     set({
       isLoading: true,
       error: null,
     });
 
     try {
-      const response = await axios.post(`${BACKEND_URL}/update-profile`, { fullName, email });
+      const formData = new FormData();
+      if (fullName) formData.append("fullName", fullName);
+      if (email) formData.append("email", email);
+      if (profileImage) formData.append("profileImage", profileImage);
+
+      const response = await axios.post(`${BACKEND_URL}/update-profile`, formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
       set({
         user: response.data.user,
         error: null,

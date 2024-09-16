@@ -4,6 +4,7 @@ import { sendOtp } from "../utils/sendOtp.util.js";
 async function updateProfile(req, res) {
   const { fullName, email } = req.body;
   const id = req.userId;
+
   try {
     if (email) {
       const existingUser = await User.findOne({ email });
@@ -30,6 +31,10 @@ async function updateProfile(req, res) {
       user.emailOtp = otp;
       user.emailOtpExpiryAt = Date.now() + 30 * 60 * 1000;
       user.isVerified = false;
+    }
+
+    if (req.file) {
+      user.profileImage = `http://localhost:3000/images/${req.file.filename}`;
     }
 
     user.fullName = fullName || user.fullName;

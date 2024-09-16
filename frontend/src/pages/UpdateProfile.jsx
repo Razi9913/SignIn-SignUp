@@ -8,6 +8,7 @@ import { ArrowLeft } from 'lucide-react';
 
 function UpdateProfile() {
   const nav = useNavigate();
+  const [file, setFile] = useState(null)
   const { user, updateProfile, error, isLoading } = userStore();
 
   const [userData, setUserData] = useState({
@@ -26,7 +27,7 @@ function UpdateProfile() {
   const handelSubmit = async (e) => {
     e.preventDefault()
     try {
-      await updateProfile(userData)
+      await updateProfile({ ...userData, profileImage: file })
       if (!user.isVerified) {
         nav("/verify-email")
       }
@@ -52,11 +53,20 @@ function UpdateProfile() {
           Edit Your Profile
         </h2>
         {/* div which is full rounded with image link */}
-        <div className='flex flex-col items-center justify-center mb-6'>
-          <img src='https://img.freepik.com/free-photo/close-up-portrait-young-bearded-man-face_171337-2887.jpg?size=626&ext=jpg&ga=GA1.1.2008272138.1724716800&semt=ais_hybrid' alt='Profile' className='rounded-full w-32 h-32 object-cover' />
-          <button className=' mt-4 bg-[#C5CBCB] rounded-2xl px-4 py-2'>Update Profile</button>
-        </div>
+
         <form onSubmit={handelSubmit}>
+          {/* image div */}
+          <div className='flex flex-col items-center justify-center mb-6 '>
+            {user.profileImage ? (
+              <img src={user.profileImage} alt='Profile' className='rounded-full w-32 h-32 object-cover' />
+            ) : (
+              <div className='flex items-center justify-center rounded-full w-32 h-32 object-cover bg-[#C5CBCB] text-8xl'>
+                {user.fullName[0].toUpperCase()}
+              </div>
+            )}
+            <input type="file" name='profileImage' className=' mt-4 bg-[#C5CBCB] rounded-2xl px-4 py-2' placeholder='' onChange={e => setFile(e.target.files[0])} />
+          </div>
+
           <p className='text-white'>Full Name</p>
           <Input
             icon={User}

@@ -5,6 +5,7 @@ import { generateTokenAndSetCookies, sendOtp } from "../utils/index.util.js";
 
 async function signUp(req, res) {
   const { fullName, email, password } = req.body;
+
   try {
     const isUserExist = await User.findOne({ email });
     if (isUserExist) {
@@ -24,6 +25,7 @@ async function signUp(req, res) {
       password: passwordHash,
       emailOtp: otp,
       emailOtpExpiryAt: Date.now() + 30 * 60 * 1000,
+      profileImage: req.file ? `http://localhost:3000/images/${req.file.filename}` : "",
       lastLogin: Date.now(),
     });
     await user.save()

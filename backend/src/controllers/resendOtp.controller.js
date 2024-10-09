@@ -1,8 +1,10 @@
+import { sendMail } from "../configs/nodeMailer.config.js";
 import { User } from "../models/user.model.js";
-import { sendOtp } from "../utils/sendOtp.util.js";
+import { VERIFICATION_CODE_TEMPLATE } from "../utils/emailTemplate.util.js";
 
 async function resendOtp(req, res) {
   const id = req.userId;
+  const attempt = 5
   try {
     const user = await User.findById(id);
     if (!user) {
@@ -11,7 +13,7 @@ async function resendOtp(req, res) {
         message: "User not found.",
       })
     }
-    if (user.noOfOtpSent >= 2) {
+    if (user.noOfOtpSent >= attempt) {
       user.noOfOtpSent = 0;
       user.noOfOtpSentExpiryAt = Date.now() + 1 * 60 * 60 * 1000;
       user.save();
@@ -30,9 +32,6 @@ async function resendOtp(req, res) {
         })}`,
       })
     }
-    console.log(Date.now() < new Date(user.noOfOtpSentExpiryAt).getTime());
-    console.log(Date.now());
-    console.log(new Date(user.noOfOtpSentExpiryAt).getTime());
 
     // send otp logic here
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -42,7 +41,9 @@ async function resendOtp(req, res) {
     user.emailOtpExpiryAt = Date.now() + 30 * 60 * 1000;
     await user.save();
 
-    await sendOtp(user.email, otp)
+    const html = VERIFICATION_CODE_TEMPLATE
+      .replace("{verificationCode}", otp);
+    await sendMail(user.email, "Verify your E-mail", html)
 
     return res.status(200).json({
       success: true,

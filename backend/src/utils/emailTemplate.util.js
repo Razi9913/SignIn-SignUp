@@ -1,4 +1,4 @@
-export const VERIFICATION_EMAIL_TEMPLATE = `
+export const VERIFICATION_CODE_TEMPLATE = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -89,6 +89,106 @@ export const PASSWORD_RESET_REQUEST_TEMPLATE = `
   </div>
   <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
     <p>This is an automated message, please do not reply to this email.</p>
+  </div>
+</body>
+</html>
+`;
+
+export const WELCOME_EMAIL_TEMPLATE = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1b1b1b;
+      color: white;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #333;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    .header {
+      text-align: center;
+      font-size: 20px;
+      padding-bottom: 20px;
+      color: #ddd;
+    }
+    .welcome-img {
+      display: block;
+      margin: 0 auto;
+      max-width: 100%;
+      height: auto;
+    }
+    .content {
+      text-align: left;
+      padding: 20px;
+      background-color: #222;
+      border-radius: 10px;
+    }
+    .content h1 {
+      font-size: 24px;
+      color: #fff;
+    }
+    .content p {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #ccc;
+    }
+    .contact-info {
+      margin-top: 20px;
+    }
+    .contact-info a {
+      color: #49a6e9;
+      text-decoration: none;
+    }
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 14px;
+      color: #777;
+    }
+    .footer a {
+      color: #49a6e9;
+      text-decoration: none;
+    }
+    .footer p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      Razi Demo Project
+    </div>
+    <img class="welcome-img" src="https://t3.ftcdn.net/jpg/00/87/97/06/360_F_87970620_Tdgw6WYdWnrZHn2uQwJpVDH4vr4PINSc.jpg" alt="Welcome">
+    <div class="content">
+      <h1>Dear, {Name}!</h1>
+      <p>Welcome to Razi Demo Project!</p>
+      <p>We’re thrilled to have you join us. Whether you’re here to learn, explore, or contribute, we’re confident you’ll find a supportive community and valuable resources along the way.</p>
+      <p>If you have any questions or need assistance, feel free to reach out. We’re here to help!</p>
+      <div class="contact-info">
+        <p>Contact Us</p>
+        <p>Email: <a href="mailto:skrazi9913@gmail.com">skrazi9913@gmail.com</a></p>
+        <p>WhatsApp: 9967908218</p>
+        <p>Phone No: 9967908218</p>
+      </div>
+    </div>
+    <div class="footer">
+      <p>We hope you enjoy this journey as much as we enjoy creating it for you.</p>
+      <p>© Razi Demo Project • Mumbai, 400043, India</p>
+      <p><a href="#">Unsubscribe</a></p>
+    </div>
   </div>
 </body>
 </html>

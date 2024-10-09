@@ -43,28 +43,29 @@ function EmailVerifyPage() {
     }
   };
 
-  const { error, isLoading, verifyEmail, user, resendOtp } = userStore()
+  const { isLoading, verifyEmail, user, resendOtp } = userStore()
   const handleSubmit = async (e) => {
     e.preventDefault();
     const verificationCode = code.join("");
-    // console.log(verificationCode);
     try {
-      await verifyEmail(verificationCode);
-      // toast.success(message);
+      const res = await verifyEmail(verificationCode);
+      toast.success(res);
       nav("/");
     } catch (err) {
-      console.log(err);
+      console.log("verify email : ", err);
+      toast.error(err.response.data.message)
     }
   };
 
   const handelResendOtp = async () => {
     try {
-      await resendOtp();
+      const res = await resendOtp();
       setMinute(0);
       setSecond(10);
-      // toast.success(message);
+      toast.success(res);
     } catch (err) {
-      console.log(err);
+      console.log("resend otp : ", err);
+      toast.error(err.response.data.message);
     }
   }
 
@@ -128,7 +129,6 @@ function EmailVerifyPage() {
           <p className='text-green-500 font-semibold mt-2'>
             Resend Otp  {(second === 0 && minute === 0) ? <span onClick={handelResendOtp} className='hover:underline'>Click here</span> : `after 0${minute} : ${second}`} </p>
 
-          {error && <p className='text-red-500 font-semibold mt-2'>{error}</p>}
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}

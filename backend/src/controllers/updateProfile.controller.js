@@ -1,5 +1,6 @@
+import { sendMail } from "../configs/nodeMailer.config.js";
 import { User } from "../models/user.model.js";
-import { sendOtp } from "../utils/sendOtp.util.js";
+import { VERIFICATION_CODE_TEMPLATE } from "../utils/emailTemplate.util.js";
 
 async function updateProfile(req, res) {
   const { fullName, email } = req.body;
@@ -24,13 +25,21 @@ async function updateProfile(req, res) {
       })
     }
 
+    let oldProfileImage = ""
+    if (user.profileImage) {
+      oldProfileImage = user.profileImage
+    }
+
     if (email && email !== user.email) {
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
-      await sendOtp(email, otp)
       user.email = email;
       user.emailOtp = otp;
       user.emailOtpExpiryAt = Date.now() + 30 * 60 * 1000;
       user.isVerified = false;
+
+      const html = VERIFICATION_CODE_TEMPLATE
+        .replace("{verificationCode}", otp);
+      await sendMail(user.email, "Verify your E-mail", html)
     }
 
     if (req.file) {

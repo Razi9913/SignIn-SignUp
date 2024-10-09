@@ -1,7 +1,8 @@
 import bcrypt from 'bcrypt'
 
 import { User } from "../models/user.model.js";
-import { sendPasswordChangedMail } from '../utils/sendPasswordChangedMail.util.js';
+import { sendMail } from '../configs/nodeMailer.config.js';
+import { PASSWORD_RESET_SUCCESS_TEMPLATE } from '../utils/emailTemplate.util.js';
 
 async function changePassword(req, res) {
   const { token } = req.params;
@@ -26,7 +27,8 @@ async function changePassword(req, res) {
     user.resetPasswordTokenExpiryAt = null;
     await user.save();
 
-    await sendPasswordChangedMail(user.email)
+    const html = PASSWORD_RESET_SUCCESS_TEMPLATE;
+    await sendMail(user.email, "Password Reset Successful", html)
 
     res.status(200).json({
       success: true,

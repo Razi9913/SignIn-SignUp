@@ -1,7 +1,8 @@
 import crypto from 'crypto'
 
 import { User } from "../models/user.model.js";
-import { sendResetPasswordLink } from '../utils/index.util.js';
+import { sendMail } from '../configs/nodeMailer.config.js';
+import { PASSWORD_RESET_REQUEST_TEMPLATE } from '../utils/emailTemplate.util.js';
 
 async function resetPasswordToken(req, res) {
   const { email } = req.body;
@@ -21,7 +22,9 @@ async function resetPasswordToken(req, res) {
     user.resetPasswordTokenExpiryAt = Date.now() + 15 * 60 * 1000;;
     await user.save()
 
-    await sendResetPasswordLink(user.email, resetToken);
+    const html = PASSWORD_RESET_REQUEST_TEMPLATE
+      .replace("{resetUrl}", `${process.env.FRONTEND_URL}/change-password/${resetToken}`)
+    await sendMail(user.email, "Reset password link", html)
 
     return res.status(200).json({
       success: true,

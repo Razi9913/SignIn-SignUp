@@ -1,7 +1,9 @@
 import bcrypt from "bcrypt";
 
 import { User } from "../models/user.model.js";
-import { generateTokenAndSetCookies, sendOtp } from "../utils/index.util.js";
+import { generateTokenAndSetCookies } from "../utils/index.util.js";
+import { sendMail } from "../configs/nodeMailer.config.js";
+import { VERIFICATION_CODE_TEMPLATE } from "../utils/emailTemplate.util.js";
 
 async function signUp(req, res) {
   const { fullName, email, password } = req.body;
@@ -28,15 +30,18 @@ async function signUp(req, res) {
       profileImage: req.file ? `http://localhost:3000/images/${req.file.filename}` : "",
       lastLogin: Date.now(),
     });
-    await user.save()
 
     generateTokenAndSetCookies(user._id, res)
 
-    await sendOtp(user.email, otp, user.fullName)
+    const html = VERIFICATION_CODE_TEMPLATE
+      .replace("{verificationCode}", otp);
+    await sendMail(user.email, "Verify your E-mail", html)
+
+    await user.save()
 
     res.status(201).json({
       success: true,
-      message: "User Created Successfully",
+      message: "Account Created And Otp Send Successfully",
       user: {
         ...user._doc,
         password: undefined,

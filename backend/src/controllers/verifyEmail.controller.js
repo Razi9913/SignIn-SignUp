@@ -1,5 +1,7 @@
+import { sendMail } from "../configs/nodeMailer.config.js";
 import { User } from "../models/user.model.js";
-import { getUseridFromToken, sendWelcomeEmail } from "../utils/index.util.js";
+import { WELCOME_EMAIL_TEMPLATE } from "../utils/emailTemplate.util.js";
+import { getUseridFromToken } from "../utils/index.util.js";
 
 async function verifyEmail(req, res) {
   const { emailOtp } = req.body;
@@ -25,8 +27,6 @@ async function verifyEmail(req, res) {
         message: "User not found.",
       })
     }
-    // console.log(typeof (emailOtp.toString()), typeof (user.emailOtp.toString()));
-    // console.log(Date.now() < new Date(user.emailOtpExpiryAt).getTime());
 
     if (emailOtp.toString() !== user.emailOtp.toString() || Date.now() > new Date(user.emailOtpExpiryAt).getTime()) {
       return res.status(400).json({
@@ -42,7 +42,9 @@ async function verifyEmail(req, res) {
     user.noOfOtpSentExpiryAt = undefined;
     await user.save();
 
-    await sendWelcomeEmail(user.email, user.fullName);
+    const html = WELCOME_EMAIL_TEMPLATE
+      .replace("{Name}", user.fullName)
+    await sendMail(user.email, "Welcome E-mail", html)
 
     return res.status(200).json({
       success: true,

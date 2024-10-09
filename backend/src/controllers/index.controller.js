@@ -7,6 +7,7 @@ import { verifyEmail } from './verifyEmail.controller.js'
 import { changePassword } from './changePassword.controller.js'
 import { updateProfile } from './updateProfile.controller.js'
 import { resendOtp } from './resendOtp.controller.js'
+import { updatePassword } from './updatePassword.controller.js'
 
 export {
   signUp,
@@ -18,4 +19,5 @@ export {
   changePassword,
   updateProfile,
   resendOtp,
+  updatePassword,
 }

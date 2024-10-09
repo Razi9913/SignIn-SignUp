@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { User, Mail, Lock, Equal, Loader } from 'lucide-react';
 import { Input, LoginSignUp, PasswordMatching, PasswordStrengthMeter } from '../components/index.components';
 import { userStore } from '../stores/user.store.js';
+import { signUpSchema } from '../utils/formValidate.js';
+import { toast } from 'react-hot-toast';
 
 function SignUpPage() {
   const nav = useNavigate();
@@ -39,9 +41,6 @@ function SignUpPage() {
     }
   };
 
-  console.log(imagePreview);
-
-
   const handleFocus = (field) => {
     setFocusedField(field);
   };
@@ -50,22 +49,21 @@ function SignUpPage() {
     setFocusedField(null);
   };
 
-  const { error, isLoading, signUp, clearError } = userStore()
+  const { isLoading, signUp } = userStore()
+
   const handelSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log(signUpData);
-
-      await signUp(signUpData)
+      await signUpSchema.validate(signUpData, { abortEarly: false });
+      const res = await signUp(signUpData)
+      toast.success(res)
       nav("/verify-email")
     } catch (err) {
-      console.log("signUp error", err);
+      if (err.inner) return toast.error(err.inner[0].message)
+      console.log("signUp error : ", err)
+      toast.error(err.response.data.message)
     }
   }
-
-  useEffect(() => {
-    clearError()
-  }, [])
 
   return (
     <motion.div
@@ -86,11 +84,11 @@ function SignUpPage() {
               {imagePreview ? (
                 <img src={imagePreview} alt='Profile' className='rounded-full w-32 h-32 object-cover ' />
               ) : (
-                <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfrdjmERksCRu0wajIX9sqc9lMb3vNXWHRcw&s' alt='Profile' className='rounded-full w-32 h-32 object-cover ' />
+                <img src='http://localhost:3000/image.png' alt='Profile' className='rounded-full w-32 h-32 object-cover ' />
               )}
             </div>
             <input type="file" name='profileImage' id='uploadProfile' hidden onChange={handelFileChange} />
-            <label for="uploadProfile" className=' mt-4 bg-[#C5CBCB] rounded-2xl px-4 py-2'>Upload Profile</label>
+            <label htmlFor="uploadProfile" className=' mt-4 bg-[#C5CBCB] rounded-2xl px-4 py-2'>Upload Profile</label>
           </div>
 
           <Input
@@ -100,14 +98,16 @@ function SignUpPage() {
             name='fullName'
             value={signUpData.fullName}
             onChange={handleChange}
+            key={1}
           />
           <Input
             icon={Mail}
-            type='email'
+            type='text'
             placeholder='Email Address'
             name='email'
             value={signUpData.email}
             onChange={handleChange}
+            key={2}
           />
           <Input
             icon={Lock}
@@ -118,6 +118,7 @@ function SignUpPage() {
             onChange={handleChange}
             onFocus={() => (handleFocus("password"))} // Show meter on focus
             onBlur={handleBlur} // Optionally hide meter on blur
+            key={3}
           />
           <Input
             icon={Equal}
@@ -128,9 +129,9 @@ function SignUpPage() {
             onChange={handleChange}
             onFocus={() => handleFocus("confirmPassword")} // Show meter on focus
             onBlur={handleBlur} // Optionally hide meter on blur
+            key={4}
           />
-          {/* for error */}
-          {error && <p className='text-red-500 font-semibold mt-2'>{error}</p>}
+
           {/* password strength meter */}
           <AnimatePresence>
             {focusedField === "password" && (

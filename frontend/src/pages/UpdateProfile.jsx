@@ -1,15 +1,17 @@
 import { Link, useNavigate } from 'react-router-dom'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Loader, User } from 'lucide-react'
 import { Input } from '../components/index.components'
 import { userStore } from '../stores/user.store'
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react'
+import { updateUserSchema } from '../utils/formValidate'
+import { toast } from 'react-hot-toast'
 
 function UpdateProfile() {
   const nav = useNavigate();
   const [imagePreview, setImagePreview] = useState(null)
-  const { user, updateProfile, error, isLoading } = userStore();
+  const { user, updateProfile, isLoading } = userStore();
   const [userData, setUserData] = useState({
     profileImage: null,
     fullName: user.fullName,
@@ -34,20 +36,24 @@ function UpdateProfile() {
     )
 
     if (file) {
-      imageReader.readAsDataURL(file);
+      imageReader.readAsDataURL(file)
     }
   };
 
   const handelSubmit = async (e) => {
     e.preventDefault()
     try {
-      await updateProfile(userData)
+      await updateUserSchema.validate(userData, { abortEarly: false })
+      const res = await updateProfile(userData)
       if (!user.isVerified) {
         nav("/verify-email")
       }
+      toast.success(res)
       nav("/")
     } catch (err) {
-      console.log("handelSubmit error", err);
+      if (err.inner) toast.error(err.inner[0].message)
+      console.log("update profile : ", err);
+      toast.error(err.response.data.message)
     }
   }
 
@@ -71,7 +77,7 @@ function UpdateProfile() {
         <form onSubmit={handelSubmit}>
           {/* image div */}
           <div className='flex flex-col items-center justify-center mb-6 '>
-            {user.profileImage ? (
+            {user.profileImage || imagePreview ? (
               <img src={imagePreview ? imagePreview : user.profileImage} alt='Profile' className='rounded-full w-32 h-32 object-cover' />
             ) : (
               <div className='flex items-center justify-center rounded-full w-32 h-32 object-cover bg-[#C5CBCB] text-8xl'>
@@ -98,14 +104,16 @@ function UpdateProfile() {
           </div>
           <Input
             icon={User}
-            type='email'
+            type='text'
             placeholder='Email'
             name='email'
             defaultValue={userData.email}
             onChange={handelChange}
           />
 
-          {error && <p className='text-red-500 font-semibold mb-4'>{error}</p>}
+          <Link to={'/update-password'}>
+            <p className='text-green-500 font-semibold mb-4 inline-block'>Update Password</p>
+          </Link>
 
           <motion.button
             whileHover={{ scale: 1.05 }}

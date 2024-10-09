@@ -1,25 +1,21 @@
 import { create } from 'zustand';
 import axios from 'axios';
-
+import toast from 'react-hot-toast'
 axios.defaults.withCredentials = true;
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const userStore = create((set) => ({
   user: null,
-  error: null,
-  message: null,
   isLoading: false,
   isAuthenticated: false,
   isCheckingAuth: true,
 
   signUp: async (userData) => {
     const { fullName, email, password, profileImage } = userData;
-    // console.log("userData:", userData); // Check if the password is present
 
     set({
       isLoading: true,
-      error: null,
     });
 
     try {
@@ -41,15 +37,14 @@ const userStore = create((set) => ({
 
       set({
         user: response.data.user,
-        error: null,
-        message: response.data.message,
         isLoading: false,
         isAuthenticated: true,
         isCheckingAuth: false,
       });
+
+      return response.data.message;
     } catch (error) {
       set({
-        error: error.response.data.message,
         isLoading: false,
       });
       throw error;
@@ -60,22 +55,20 @@ const userStore = create((set) => ({
     const { email, password } = userData;
     set({
       isLoading: true,
-      error: null,
     });
 
     try {
       const response = await axios.post(`${BACKEND_URL}/login`, { email, password });
+
       set({
         user: response.data.user,
-        error: null,
-        message: response.data.message,
         isLoading: false,
         isAuthenticated: true,
         isCheckingAuth: false,
       });
+      return response.data.message;
     } catch (error) {
       set({
-        error: error.response.data.message || 'Error signing in',
         isLoading: false,
       });
       throw error;
@@ -85,21 +78,19 @@ const userStore = create((set) => ({
   logout: async () => {
     set({
       isLoading: true,
-      error: null,
     });
 
     try {
       const response = await axios.get(`${BACKEND_URL}/logout`);
       set({
         user: null,
-        error: null,
-        message: response.data.message,
         isLoading: false,
         isAuthenticated: false,
       });
+
+      return response.data.message;
     } catch (error) {
       set({
-        error: error.response.data.message,
         isLoading: false,
       });
       throw error;
@@ -108,10 +99,8 @@ const userStore = create((set) => ({
 
   updateProfile: async (userData) => {
     const { fullName, email, profileImage } = userData;
-    // console.log("userData:", userData); // Check if the password is present
     set({
       isLoading: true,
-      error: null,
     });
 
     try {
@@ -127,16 +116,36 @@ const userStore = create((set) => ({
           },
         }
       );
-
       set({
         user: response.data.user,
-        error: null,
-        message: response.data.message,
         isLoading: false,
       });
+
+      return response.data.message;
     } catch (error) {
       set({
-        error: error.response.data.message,
+        isLoading: false,
+      });
+      throw error;
+    }
+  },
+
+  updatePassword: async (password) => {
+    set({
+      isLoading: true,
+      error: null,
+    });
+
+    try {
+      const response = await axios.post(`${BACKEND_URL}/update-password`, { password });
+      set({
+        isLoading: false,
+        isCheckingAuth: false,
+      });
+
+      return response.data.message;
+    } catch (error) {
+      set({
         isLoading: false,
       });
       throw error;
@@ -146,22 +155,20 @@ const userStore = create((set) => ({
   verifyEmail: async (emailOtp) => {
     set({
       isLoading: true,
-      error: null,
     });
 
     try {
       const response = await axios.post(`${BACKEND_URL}/verify-email`, { emailOtp });
       set({
         user: response.data.user,
-        message: response.data.message,
-        error: null,
         isAuthenticated: true,
         isLoading: false,
         // isCheckingAuth: true,
       });
+
+      return response.data.message;
     } catch (error) {
       set({
-        error: error.response.data.message,
         isLoading: false,
       });
       throw error;
@@ -171,7 +178,6 @@ const userStore = create((set) => ({
   forgotPassword: async (email) => {
     set({
       isLoading: true,
-      error: null,
     });
 
     try {
@@ -181,9 +187,10 @@ const userStore = create((set) => ({
         message: response.data.message,
         isLoading: false,
       });
+
+      return response.data.message;
     } catch (error) {
       set({
-        error: error.response.data.message || 'Error sending reset link',
         isLoading: false,
       });
       throw error;
@@ -193,19 +200,17 @@ const userStore = create((set) => ({
   changePassword: async (token, password) => {
     set({
       isLoading: true,
-      error: null,
     });
 
     try {
       const response = await axios.post(`${BACKEND_URL}/change-password/${token}`, { password });
       set({
-        message: response.data.message,
-        error: null,
         isLoading: false,
       });
+
+      return response.data.message;
     } catch (error) {
       set({
-        error: error.response.data.message,
         isLoading: false,
       });
       throw error;
@@ -215,54 +220,32 @@ const userStore = create((set) => ({
   checkAuth: async () => {
     set({
       isCheckingAuth: true,
-      error: null,
     });
 
     try {
       const response = await axios.get(`${BACKEND_URL}/check-auth`);
       set({
         user: response.data.user,
-        error: null,
-        isAuthenticated: !!response.data.user,
+        isAuthenticated: response?.data?.user?.isVerified,
         isCheckingAuth: false,
       });
+
+      return response.data.message;
     } catch (error) {
       set({
-        error: null,
         isCheckingAuth: false,
       });
     }
   },
 
   resendOtp: async () => {
-    set({
-      error: null,
-    });
-
     try {
       const response = await axios.get(`${BACKEND_URL}/resend-otp`);
-      set({
-        message: response.data.message,
-        error: null,
-      });
+
+      return response.data.message;
     } catch (error) {
-      set({
-        error: error.response.data.message,
-      });
       throw error;
     }
-  },
-
-  clearError: () => {
-    set({
-      error: null,
-    });
-  },
-
-  clearMessage: () => {
-    set({
-      message: null,
-    });
   },
 
 }));

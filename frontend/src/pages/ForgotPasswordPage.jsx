@@ -1,22 +1,25 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, Loader, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Input, LoginSignUp } from "../components/index.components";
 import { userStore } from "../stores/user.store.js";
+import toast from "react-hot-toast";
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const { error, isLoading, forgotPassword } = userStore()
+  const { isLoading, forgotPassword } = userStore()
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await forgotPassword(email);
+      const res = await forgotPassword(email);
       setIsSubmitted(true);
+      toast.success(res)
     } catch (err) {
-      console.log(err);
+      console.log("forgot password page : ", err);
+      toast.error(err.response.data.message)
     }
   }
 
@@ -44,8 +47,6 @@ const ForgotPasswordPage = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-
-            {error && <p className='text-red-500 font-semibold mb-4'>{error}</p>}
 
             <motion.button
               whileHover={{ scale: 1.02 }}

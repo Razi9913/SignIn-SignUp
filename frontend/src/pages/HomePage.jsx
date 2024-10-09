@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from "framer-motion";
 import { userStore } from "../stores/user.store.js";
-import { useEffect } from 'react';
+import toast from 'react-hot-toast';
 
 const HomePage = () => {
   const nav = useNavigate();
@@ -10,16 +10,14 @@ const HomePage = () => {
 
   const handleLogout = async () => {
     try {
-      await logout()
+      const res = await logout()
+      toast.success(res)
       nav("/login");
     } catch (err) {
-      console.log(err);
+      console.log("while logout : ", err);
+      toast.error(err.response.data.message)
     }
   };
-
-  useEffect(() => {
-
-  }, [user.profileImage])
 
   return (
     <motion.div
@@ -107,7 +105,6 @@ const HomePage = () => {
             className='w-full py-3 px-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white 
 				font-bold rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700
 				focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-900 mb-4'>
-
             Edit Your Profile
           </motion.button>
         </Link>

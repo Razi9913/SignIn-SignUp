@@ -4,7 +4,7 @@ import { Mail, Lock, Loader } from "lucide-react";
 import { Link, useNavigate } from 'react-router-dom';
 import { Input, LoginSignUp } from '../components/index.components';
 import { userStore } from '../stores/user.store';
-
+import { toast } from 'react-hot-toast';
 
 function LoginPage() {
   const nav = useNavigate();
@@ -22,20 +22,18 @@ function LoginPage() {
     });
   };
 
-  const { error, isLoading, login, clearError } = userStore()
+  const { isLoading, login } = userStore()
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await login(signUpData);
+      const res = await login(signUpData);
+      toast.success(res);
       nav("/");
     } catch (err) {
-      console.log(err);
+      console.log("login error : ", err);
+      toast.error(err.response.data.message);
     }
   }
-
-  useEffect(() => {
-    clearError()
-  }, [])
 
   return (
     <motion.div
@@ -72,8 +70,6 @@ function LoginPage() {
               Forgot password?
             </Link>
           </div>
-
-          {error && <p className='text-red-500 font-semibold mt-2'>{error}</p>}
 
           <motion.button
             className='mt-5 w-full py-3 px-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white 

@@ -5,6 +5,7 @@ import HomePage from "./HomePage";
 import LoginPage from "./LoginPage";
 import PageNotFound from "./PageNotFound";
 import SignUpPage from "./SignUpPage";
+import UpdatePasswordPage from "./UpdatePasswordPage";
 import UpdateProfile from "./UpdateProfile";
 
 export {
@@ -16,4 +17,5 @@ export {
   UpdateProfile,
   ForgotPasswordPage,
   ChangePasswordPage,
+  UpdatePasswordPage,
 }

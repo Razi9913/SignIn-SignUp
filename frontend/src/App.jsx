@@ -7,7 +7,6 @@ import { userStore } from './stores/user.store.js'
 
 function App() {
   const { checkAuth, isCheckingAuth } = userStore();
-  console.log(isCheckingAuth);
 
   useEffect(() => {
     checkAuth();

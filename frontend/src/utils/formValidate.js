@@ -70,4 +70,11 @@ const passwordSchema = Yup.object({
     .oneOf([Yup.ref("password")], "Passwords must match"),
 });
 
-export { signUpSchema, updateUserSchema, passwordSchema }
+const loginSchema = Yup.object({
+  email: Yup.string()
+    .required("Email is Required"),
+  password: Yup.string()
+    .required("Password is required")
+})
+
+export { signUpSchema, updateUserSchema, passwordSchema, loginSchema }

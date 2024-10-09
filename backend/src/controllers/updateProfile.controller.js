@@ -1,5 +1,6 @@
 import { sendMail } from "../configs/nodeMailer.config.js";
 import { User } from "../models/user.model.js";
+import { deleteFile } from "../utils/delete.util.js";
 import { VERIFICATION_CODE_TEMPLATE } from "../utils/emailTemplate.util.js";
 
 async function updateProfile(req, res) {
@@ -13,7 +14,7 @@ async function updateProfile(req, res) {
         return res.status(400).json({
           success: false,
           message: "Email already exists"
-        })
+        });
       }
     }
 
@@ -22,28 +23,32 @@ async function updateProfile(req, res) {
       return res.status(400).json({
         success: false,
         message: "User not found"
-      })
+      });
     }
 
-    let oldProfileImage = ""
+    let oldProfileImage = "";
     if (user.profileImage) {
-      oldProfileImage = user.profileImage
+      oldProfileImage = user.profileImage;
     }
 
     if (email && email !== user.email) {
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
       user.email = email;
       user.emailOtp = otp;
-      user.emailOtpExpiryAt = Date.now() + 30 * 60 * 1000;
+      user.emailOtpExpiryAt = Date.now() + 15 * 60 * 1000; // 15 min
       user.isVerified = false;
 
       const html = VERIFICATION_CODE_TEMPLATE
         .replace("{verificationCode}", otp);
-      await sendMail(user.email, "Verify your E-mail", html)
+      await sendMail(user.email, "Verify your E-mail", html);
     }
 
     if (req.file) {
-      user.profileImage = `http://localhost:3000/images/${req.file.filename}`;
+      user.profileImage = `/images/${req.file.filename}`;
+      await user.save();
+      if (oldProfileImage) {
+        deleteFile(oldProfileImage)
+      }
     }
 
     user.fullName = fullName || user.fullName;
@@ -56,13 +61,13 @@ async function updateProfile(req, res) {
         ...user._doc,
         password: undefined,
       }
-    })
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
       message: error.message || "Error updating profile",
-    })
+    });
   }
 }
 
-export { updateProfile }
+export { updateProfile };

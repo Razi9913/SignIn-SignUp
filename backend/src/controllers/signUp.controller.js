@@ -26,8 +26,8 @@ async function signUp(req, res) {
       email,
       password: passwordHash,
       emailOtp: otp,
-      emailOtpExpiryAt: Date.now() + 30 * 60 * 1000,
-      profileImage: req.file ? `http://localhost:3000/images/${req.file.filename}` : "",
+      emailOtpExpiryAt: Date.now() + 15 * 60 * 1000, // 30 min
+      profileImage: req.file ? `/images/${req.file.filename}` : "",
       lastLogin: Date.now(),
     });
 

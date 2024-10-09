@@ -8,9 +8,10 @@ pnpm-debug.log*
 lerna-debug.log*
 
 frontend/node_modules
-backend/node_modules
+node_modules
 frontend/.env
-backend/.env
+.env
+frontend/dist
 dist
 dist-ssr
 *.local

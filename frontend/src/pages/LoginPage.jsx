@@ -5,19 +5,20 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Input, LoginSignUp } from '../components/index.components';
 import { userStore } from '../stores/user.store';
 import { toast } from 'react-hot-toast';
+import { loginSchema } from '../utils/formValidate';
 
 function LoginPage() {
   const nav = useNavigate();
 
-  const [signUpData, setSignUpData] = useState({
+  const [loginData, setLoginData] = useState({
     email: "",
     password: "",
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setSignUpData({
-      ...signUpData,
+    setLoginData({
+      ...loginData,
       [name]: value,
     });
   };
@@ -26,11 +27,14 @@ function LoginPage() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await login(signUpData);
+      await loginSchema.validate(loginData, { abortEarly: false })
+      const res = await login(loginData);
       toast.success(res);
       nav("/");
     } catch (err) {
-      console.log("login error : ", err);
+      if (err.inner) {
+        return toast.error(err.inner[0].message)
+      }
       toast.error(err.response.data.message);
     }
   }
@@ -52,7 +56,7 @@ function LoginPage() {
             type='email'
             placeholder='Email Address'
             name='email'
-            value={signUpData.email}
+            value={loginData.email}
             onChange={handleChange}
           />
 
@@ -61,7 +65,7 @@ function LoginPage() {
             type='password'
             placeholder='Password'
             name='password'
-            value={signUpData.password}
+            value={loginData.password}
             onChange={handleChange}
           />
 

@@ -14,7 +14,6 @@ const HomePage = () => {
       toast.success(res)
       nav("/login");
     } catch (err) {
-      console.log("while logout : ", err);
       toast.error(err.response.data.message)
     }
   };
@@ -29,7 +28,7 @@ const HomePage = () => {
 
       <div className='flex flex-col items-center justify-center mb-6'>
         {user.profileImage !== "" ? (
-          <img src={user.profileImage} alt='Profile' className='rounded-full w-32 h-32 object-cover' />
+          <img src={import.meta.env.VITE_BACKEND_IMAGE_URL + user.profileImage} alt='Profile' className='rounded-full w-32 h-32 object-cover' />
         ) : (
           <div className='flex items-center justify-center rounded-full w-32 h-32 object-cover bg-[#C5CBCB] text-8xl'>
             {user.fullName[0].toUpperCase()}

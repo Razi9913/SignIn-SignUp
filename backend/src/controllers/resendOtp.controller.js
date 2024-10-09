@@ -15,7 +15,7 @@ async function resendOtp(req, res) {
     }
     if (user.noOfOtpSent >= attempt) {
       user.noOfOtpSent = 0;
-      user.noOfOtpSentExpiryAt = Date.now() + 1 * 60 * 60 * 1000;
+      user.noOfOtpSentExpiryAt = Date.now() + 1 * 60 * 60 * 1000; // 1 hour
       user.save();
       return res.status(400).json({
         success: false,
@@ -38,7 +38,7 @@ async function resendOtp(req, res) {
 
     user.noOfOtpSent += 1;
     user.emailOtp = otp;
-    user.emailOtpExpiryAt = Date.now() + 30 * 60 * 1000;
+    user.emailOtpExpiryAt = Date.now() + 15 * 60 * 1000; // 15 min
     await user.save();
 
     const html = VERIFICATION_CODE_TEMPLATE

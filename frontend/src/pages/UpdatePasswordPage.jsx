@@ -41,7 +41,6 @@ const UpdatePasswordPage = () => {
       nav('/')
     } catch (err) {
       if (err.inner) toast.error(err.inner[0].message)
-      console.log("update password page : ", err);
       toast.error(err.response.data.message)
     }
   }

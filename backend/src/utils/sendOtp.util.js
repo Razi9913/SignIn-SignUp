@@ -13,11 +13,7 @@ async function sendOtp(email, otp, name) {
         .replace("{verificationCode}", otp),
       category: "Email Verification",
     })
-
-    console.log("Email send successfully", response);
   } catch (error) {
-    console.log(`Error sending verification email ${error}`);
-
     throw new Error("Error sending verification email \n", error);
   }
 }

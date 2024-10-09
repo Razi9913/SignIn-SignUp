@@ -16,11 +16,7 @@ async function sendWelcomeEmail(email, fullName) {
         "company_info_country": "India"
       },
     })
-
-    console.log("Email send successfully", response);
   } catch (error) {
-    console.log(`Error sending welcome email ${error}`);
-
     throw new Error("Error sending welcome email \n", error);
   }
 }

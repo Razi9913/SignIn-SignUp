@@ -18,7 +18,6 @@ const ForgotPasswordPage = () => {
       setIsSubmitted(true);
       toast.success(res)
     } catch (err) {
-      console.log("forgot password page : ", err);
       toast.error(err.response.data.message)
     }
   }

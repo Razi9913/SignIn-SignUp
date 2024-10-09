@@ -19,7 +19,7 @@ async function resetPasswordToken(req, res) {
     const resetToken = crypto.randomBytes(20).toString("hex");
 
     user.resetPasswordToken = resetToken;
-    user.resetPasswordTokenExpiryAt = Date.now() + 15 * 60 * 1000;;
+    user.resetPasswordTokenExpiryAt = Date.now() + 1 * 60 * 60 * 1000; // 1 hour
     await user.save()
 
     const html = PASSWORD_RESET_REQUEST_TEMPLATE

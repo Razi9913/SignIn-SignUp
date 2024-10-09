@@ -62,6 +62,4 @@ async function verifyEmail(req, res) {
   }
 }
 
-export {
-  verifyEmail,
-}
+export { verifyEmail }

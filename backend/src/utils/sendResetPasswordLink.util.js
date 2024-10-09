@@ -13,11 +13,7 @@ async function sendResetPasswordLink(email, resetToken) {
         .replace("{resetUrl}", `${process.env.FRONTEND_URL}/change-password/${resetToken}`),
       category: "Email Verification",
     })
-
-    console.log("sending reset password link", response);
   } catch (error) {
-    console.log(`sending reset password link ${error}`);
-
     throw new Error("sending reset password link \n", error);
   }
 }

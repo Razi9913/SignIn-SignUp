@@ -41,7 +41,6 @@ const ChangePasswordPage = () => {
       nav('/login')
     } catch (err) {
       if (err.inner) toast.error(err.inner[0].message)
-      console.log(err);
       toast.error(err.response.data.message)
     }
   };

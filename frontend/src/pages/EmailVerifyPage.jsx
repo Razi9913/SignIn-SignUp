@@ -6,8 +6,8 @@ import { userStore } from '../stores/user.store.js'
 
 function EmailVerifyPage() {
   const [code, setCode] = useState(["", "", "", "", "", ""])
-  const [second, setSecond] = useState(10)
-  const [minute, setMinute] = useState(0)
+  const [second, setSecond] = useState(59)
+  const [minute, setMinute] = useState(1)
   const inputRefs = useRef([]);
   const nav = useNavigate();
 
@@ -52,7 +52,6 @@ function EmailVerifyPage() {
       toast.success(res);
       nav("/");
     } catch (err) {
-      console.log("verify email : ", err);
       toast.error(err.response.data.message)
     }
   };
@@ -60,11 +59,11 @@ function EmailVerifyPage() {
   const handelResendOtp = async () => {
     try {
       const res = await resendOtp();
-      setMinute(0);
-      setSecond(10);
+      setMinute(1);
+      setSecond(59);
+      setCode(["", "", "", "", "", ""])
       toast.success(res);
     } catch (err) {
-      console.log("resend otp : ", err);
       toast.error(err.response.data.message);
     }
   }

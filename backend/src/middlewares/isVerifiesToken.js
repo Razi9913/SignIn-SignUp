@@ -2,7 +2,6 @@ import { getUseridFromToken } from "../utils/index.util.js";
 
 async function isVerifiedToken(req, res, next) {
   const token = req.cookies.token;
-  // console.log("token : ", token);
 
   if (!token) {
     return res.status(400).json({
@@ -13,7 +12,6 @@ async function isVerifiedToken(req, res, next) {
 
   try {
     const userId = await getUseridFromToken(token);
-    // console.log("userId : ", userId);
 
     if (!userId) {
       return res.status(400).json({

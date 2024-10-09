@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { motion, AnimatePresence } from "framer-motion";
 import { User, Mail, Lock, Equal, Loader } from 'lucide-react';
 import { Input, LoginSignUp, PasswordMatching, PasswordStrengthMeter } from '../components/index.components';
@@ -60,7 +60,6 @@ function SignUpPage() {
       nav("/verify-email")
     } catch (err) {
       if (err.inner) return toast.error(err.inner[0].message)
-      console.log("signUp error : ", err)
       toast.error(err.response.data.message)
     }
   }
